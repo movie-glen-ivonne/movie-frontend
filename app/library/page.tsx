@@ -41,7 +41,7 @@ export default function Home() {
               <div className="max-w-2xl">
                 <div className="text-center">
                   <h1 className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-4xl">
-                    My Library
+                    My Librarys
                   </h1>
                 </div>
               </div>
