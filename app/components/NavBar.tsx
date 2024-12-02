@@ -31,7 +31,7 @@ export default function NavBar() {
             />
           </Link>
         </div>
-        {!isAuthenticated && (
+        {isAuthenticated && (
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-white-900">
@@ -41,7 +41,7 @@ export default function NavBar() {
           </div>
         )}
 
-        {isAuthenticated && !loading && (
+        {!isAuthenticated && !loading && (
 
           <div className="flex flex-1 items-center justify-end gap-x-6">
             <a href="/login" className="hidden text-sm/6 font-semibold text-white-900 lg:block">

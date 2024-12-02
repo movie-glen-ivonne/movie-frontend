@@ -1,5 +1,6 @@
 'use client'
 
+import { trackSynchronousPlatformIOAccessInDev } from 'next/dist/server/app-render/dynamic-rendering';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
@@ -19,8 +20,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true)
   
   useEffect(() => {
-    fetchProfile()
-
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchProfile();
+      setLoading(false)
+      setIsAuthenticated(true);
+    }
   }, []);
 
 
@@ -28,13 +33,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const res = await fetch(`https://node-glen-413936355529.europe-west1.run.app/api/profile`, {
+        const res = await fetch(`https://movie-project-bk-413936355529.europe-west1.run.app/api/profile`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
+          setUser(data.userByID);
           setIsAuthenticated(true);
         } else {
           setUser(null);
@@ -56,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Register function
   const register = async (name: string, email: string, password: string) => {
-    const res = await fetch('https://node-glen-413936355529.europe-west1.run.app/api/register', {
+    const res = await fetch('https://movie-project-bk-413936355529.europe-west1.run.app/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
@@ -67,7 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Login function
   const login = async (email: string, password: string) => {
-    const res = await fetch('https://node-glen-413936355529.europe-west1.run.app/api/login', {
+    const res = await fetch('https://movie-project-bk-413936355529.europe-west1.run.app/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

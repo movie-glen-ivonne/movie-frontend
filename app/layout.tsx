@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
+import { MovieProvider } from "./context/MovieContext"
 import NavBar from './components/NavBar'
 import 'swiper/css';
 
@@ -29,12 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <AuthProvider>
-          <NavBar />
-          {children}
+          <MovieProvider>
+            <NavBar />
+            {children}
+          </MovieProvider>
         </AuthProvider>
       </body>
     </html>

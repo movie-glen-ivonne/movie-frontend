@@ -1,10 +1,9 @@
 'use client'
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useAuth } from '../context/AuthContext'
 import {useRouter} from 'next/navigation';
 import Image from 'next/image'
-
 export default function LogIn() {
 
 
@@ -12,7 +11,13 @@ export default function LogIn() {
     const [password, setPassword] = useState('')
     const router = useRouter()
 
-    const {login}: any = useAuth()
+    const {login, loading, isAuthenticated}: any = useAuth()
+
+    useEffect(() => {
+        if (isAuthenticated) {
+          router.push('/');
+        } 
+    }, [isAuthenticated, loading, router]);
 
     const handleSubmit = async (e : React.FormEvent) => {
       e.preventDefault()
@@ -20,7 +25,7 @@ export default function LogIn() {
       console.log('here')
       const response = await login(email, password);
 
-      if (response.message == 'User successfully Logged in!') {
+      if (response.user) {
             router.push('/')
           }
       else {
@@ -30,7 +35,7 @@ export default function LogIn() {
     }
 
     return (
-      <>
+      <>   
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img

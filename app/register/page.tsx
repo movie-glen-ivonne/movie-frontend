@@ -19,7 +19,7 @@ const Register = () => {
         try{
             const response = await register(name, email, password)
     
-            if(response.message === 'User was created successfully!'){
+            if(response.message === 'User registered successfully.'){
                 // alert(response.message)
                 router.push('/')
             }
