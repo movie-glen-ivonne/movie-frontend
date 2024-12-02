@@ -89,7 +89,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
   const getTopRatedTVShows = async () => {
     const res = await fetch(`https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
+      headers: { 'Authorization': `Bearer` },
     });
 
     if (res.ok) {
@@ -110,7 +110,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
   const getTopRatedMovies = async () => {
     const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`, {
       method: 'GET',
-      headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
+      headers: { 'Authorization': `Bearer` },
     });
 
     if (res.ok) {
