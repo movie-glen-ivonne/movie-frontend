@@ -1,19 +1,15 @@
 'use client'
 
-import React, { useRef, useState } from 'react';
-import { MovieProvider, useMovie } from '../context/MovieContext';
-// Import Swiper React components
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/scrollbar';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 interface CarouselProps {
-  data: { poster_path: string; id: number, media_type: string }[]; // Include id
-  fetchMovieDetail: (id: number, media_type: string) => void; // Accept fetchMovieDetail as a prop
+  data: { poster_path: string; id: number, media_type: string }[];
+  fetchMovieDetail: (id: number, media_type: string) => void;
 }
 
 
@@ -28,7 +24,6 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
         slidesPerView={4}
         spaceBetween={30}
         centeredSlides={false}
-        // slidesPerGroupSkip={1}
         grabCursor={true}
         keyboard={{
           enabled: true,
@@ -45,12 +40,12 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
       {data.map((item, index) => (
         
           <SwiperSlide key={index}>
-          <img
-            src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-            alt={`Slide ${index + 1}`}
-            onClick={() => fetchMovieDetail(item.id, item.media_type)}  // Call fetchMovieDetail on click
-            className="cursor-pointer"
-          />
+            <img
+              src={`https://image.tmdb.org/t/p/w400${item.poster_path}`}
+              alt={`Slide ${index + 1}`}
+              onClick={() => fetchMovieDetail(item.id, item.media_type)}  // Call fetchMovieDetail on click
+              className="cursor-pointer"
+            />
         </SwiperSlide>
       ))}
       </Swiper>

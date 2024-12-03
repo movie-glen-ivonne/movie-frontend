@@ -45,7 +45,7 @@ export default function Admin() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const res = await fetch(`https://movie-project-bk-413936355529.europe-west1.run.app/api/users`, {
+          const res = await fetch(`http://localhost:3001/api/users`, {
             method: 'GET',
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -77,7 +77,7 @@ export default function Admin() {
   
       const token = localStorage.getItem('token');
       try {
-        const res = await fetch(`https://movie-project-bk-413936355529.europe-west1.run.app/api/users/${selectedUserId}`, {
+        const res = await fetch(`http://localhost:3001/api/users/${selectedUserId}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -110,7 +110,7 @@ export default function Admin() {
     const handleConfirmEdit = async (updatedUser: User) => {
       const token = localStorage.getItem('token');
       try {
-        const res = await fetch(`https://movie-project-bk-413936355529.europe-west1.run.app/api/users/${updatedUser.id}`, {
+        const res = await fetch(`http://localhost:3001/api/users/${updatedUser.id}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -303,11 +303,11 @@ export default function Admin() {
                 />
             )}
             {showToast && (
-            <Toast 
-                message={message} 
-                onClose={() => setShowToast(false)} 
-                type={isError ? 'error' : 'success'} // Pass 'error' or 'success' based on your condition
-            />
+                <Toast 
+                    message={message} 
+                    onClose={() => setShowToast(false)} 
+                    type={isError ? 'error' : 'success'} // Pass 'error' or 'success' based on your condition
+                />
             )}
             </div>
       </>

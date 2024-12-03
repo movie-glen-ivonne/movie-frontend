@@ -6,9 +6,11 @@ import Carousel from '../components/Carousel'
 import { mockdata,  trending_movies_mock, trending_tvshows_mock, topRatedMoviesMock, topRatedTvShowsMock} from '../mock-data'
 import Details from '../components/Details'
 import CreateLibrary from '../components/CreateLibrary'
+import Toast from '../components/Toast'
 import { useMovie } from '../context/MovieContext';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { Library, MediaItem, Movie } from '../types/Library';
 
 export default function Home() {
     const [details, setDetails] = useState<any>(null); // State to hold movie details
@@ -17,16 +19,27 @@ export default function Home() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateLibraryModalOpen, setIsCreateLibraryModalOpen] = useState(false);
     const {
-        posterPathsTrendingMovies, 
-        posterPathsTrendingShows, 
-        postPathsTopRatedShows, 
-        posterPathsTopRatedMovies
+        userLibraries
       } : any = useMovie();
       
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const openCreateLibraryModal = () => setIsCreateLibraryModalOpen(true);
     const closeCreateLibraryModal = () => setIsCreateLibraryModalOpen(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState<'success' | 'error'>('success');
+    const [showToast, setShowToast] = useState(false);
+    const [selectedLibraryId, setSelectedLibrarId] = useState<number | null>(null);
+    const [selectedLibraryName, setSelectedLibraryName] = useState<string | null>(null);
+    const [moviesData, setMoviesData] = useState<MediaItem[]>([]);
+    const [recommendations, setRecommendations] = useState<MediaItem[]>([]);
+
+    const handleShowToast = (message: string, type: 'success' | 'error') => {
+        setToastMessage(message);
+        setToastType(type);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 4000);
+    };
 
 
     const router = useRouter();
@@ -35,54 +48,104 @@ export default function Home() {
       if (!loading && !isAuthenticated) {
         router.push('/login');
       } 
+      console.log(userLibraries);
     }, [isAuthenticated, loading, router]);
 
     
     const fetchMovieDetail =  async (id: number, media_type: string) => {
         openModal();
-
-        const res = await fetch(`https://api.themoviedb.org/3/${media_type}/${id}`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-        });
-        const details = await res.json();
         
-        const video  = await fetch(`https://api.themoviedb.org/3/${media_type}/${id}/videos`, {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const res = await fetch(`http://localhost:3001/api/movies/${id}?type=${media_type}`, {
             method: 'GET',
-            headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-          });
-
-        const video_detail = await video.json();
-
-        if (details && video_detail) {
-        
-            setDetails({
-                id: details.id,
-                youtube_url: `https://www.youtube.com/watch?v=${video_detail.results[0].key}`,
-                poster_path: details.poster_path,
-                first_air_date: media_type == 'movie' ? details.release_date : details.first_air_date,
-                original_name: media_type == 'movie' ? details.original_title : details.original_name,
-                overview: details.overview,
-                vote_average: details.vote_average,
-                saved: false
+            headers: { 'Authorization': `Bearer ${token}` },
             });
+
+            if (res.ok) {
+
+                const details = await res.json();
+                if (details) {
+                
+                    setDetails({
+                        id: details.id,
+                        video_url: (details.video_url) ? details.video_url : "",
+                        poster_path: details.poster_path,
+                        first_air_date: details.first_air_date,
+                        original_name: details.original_name,
+                        overview: details.overview,
+                        vote_average: details.vote_average,
+                        media_type: details.media_type,
+                        saved: details.saved
+                    });
+                }
+            }
         }
     };
-    
-    const posterPathsSearch = mockdata.results
-    .filter(item => item.poster_path !== null) // Optional: filter out items where poster_path is null
-    .map(item => ({
-        poster_path: item.poster_path,
-        id: item.id,
-        media_type: "tv"
-    }));
 
+    const fetchRecommendationsOpenAI = async (library_id: number) => {
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            const res = await fetch(`http://localhost:3001/api/recommendations/${library_id}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` },
+            });
+
+            if (res.ok) {
+
+                const details = await res.json();
+                setRecommendations(details);
+                // console.log(details);
+            }
+        }
+    }
+
+    const handleLibraryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedId = Number(event.target.value);
+        const selectedLibrary = userLibraries.find((library: Library) => library.id === selectedId);
+        if (selectedLibrary) {
+
+            const data = selectedLibrary.movies.map(({ movie }: { movie: Movie }) => ({
+                poster_path: movie.poster_path,
+                id: movie.externalId,
+                media_type: movie.media_type
+            }));
+
+            setMoviesData(data);
+              
+            setSelectedLibrarId(selectedLibrary.id);
+            setSelectedLibraryName(selectedLibrary.name);
+
+            if (data.length !== 0) {
+
+                fetchRecommendationsOpenAI(selectedLibrary.id);
+            }
+        }
+      };
+
+      const handleRemoveFromSwiper = (id: number) => {
+        setMoviesData((prevData) => prevData.filter((item) => item.id !== id));
+      };
+
+      const handleAddToSwiper = (movie: MediaItem) => {
+        setMoviesData((prevData) => [...prevData, movie]);
+      };
+      
 
     return (
         <>  
-
-            {details && <Details data={details} library_id={1} library_name='test' isModalOpen={isModalOpen} openModal={openModal} closeModal={closeModal} />}
-            <CreateLibrary isCreateLibraryModalOpen={isCreateLibraryModalOpen} openCreateLibraryModal={openCreateLibraryModal} closeCreateLibraryModal={closeCreateLibraryModal} />
+            {showToast && (
+                <div className="fixed top-4 right-4 z-50">
+                    <Toast 
+                        message={toastMessage} 
+                        onClose={() => setShowToast(false)} 
+                        type={toastType}
+                    />
+                </div>
+            )}
+            {details && <Details data={details} library_id={selectedLibraryId} library_name={selectedLibraryName} isModalOpen={isModalOpen} openModal={openModal} closeModal={closeModal} removeFromSwiper={handleRemoveFromSwiper} addToSwiper={handleAddToSwiper}/>}
+            <CreateLibrary isCreateLibraryModalOpen={isCreateLibraryModalOpen} openCreateLibraryModal={openCreateLibraryModal} closeCreateLibraryModal={closeCreateLibraryModal} showToast={handleShowToast}/>
             <div className="relative">
             <div className="absolute inset-0 bg-[url('/arcane2.webp')] bg-cover bg-[center_top_30%]">
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -92,56 +155,58 @@ export default function Home() {
                 <div className="max-w-2xl">
                     <div className="text-center">
                     <h1 className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-4xl">
-                        My Library
+                        My Libraries
                     </h1>
                     </div>
                 </div>
                 </main>
             </div>
             </div>
+        
+        <div className="flex justify-center gap-6 items-center pt-5 px-4">
 
-        <div className='flex justify-end pt-5 px-4'>
+
+            <div>
+                <select
+                   
+                onChange={handleLibraryChange}
+                id="countries"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                <option defaultValue="">Choose a library</option>
+                
+                {userLibraries.map((library: Library) => (
+                    <option key={library.id} value={library.id} >
+                        {library.name}
+                    </option>
+                ))}
+                </select>
+            </div>
+
             <button
                 style={{ backgroundColor: '#e50914' }}
-                className="flex justify-center rounded-md px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex justify-center rounded-md px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 onClick={openCreateLibraryModal}
             >
                 Create Library
             </button>
         </div>
-        <div className="p-4 font-bold">
-            <p className="p-3">Library Name 1</p>
-            <Carousel data={posterPathsSearch} fetchMovieDetail={fetchMovieDetail} />
-        </div>
+        {selectedLibraryId && selectedLibraryName && (
+
+            <div className="p-4 font-bold">
+                <p className="p-3">{selectedLibraryName}</p>
+                <Carousel data={moviesData} fetchMovieDetail={fetchMovieDetail} />
+            </div>
+        )}
         
-        {posterPathsTrendingMovies && (
-            
-            <div className="mt-2 p-4 font-bold"> 
-                <p className="p-3">Library Name 2</p>
-                <Carousel data={posterPathsTrendingMovies} fetchMovieDetail={fetchMovieDetail}/>
-            </div>
-        )}
-        {posterPathsTrendingShows && (
+        {recommendations.length !== 0 && (
 
-            <div className="mt-2 p-4 font-bold">
-                <p className="p-3">Library Name 3</p>
-                <Carousel data={posterPathsTrendingShows} fetchMovieDetail={fetchMovieDetail} />
+            <div className="p-4 font-bold">
+                <p className="p-3">Recommendations</p>
+                <Carousel data={recommendations} fetchMovieDetail={fetchMovieDetail} />
             </div>
         )}
-        {posterPathsTopRatedMovies && (
-
-            <div className="mt-2 p-4 font-bold">
-                <p className="p-3">Library Name 4</p>
-                <Carousel data={posterPathsTopRatedMovies} fetchMovieDetail={fetchMovieDetail} />
-            </div>
-        )}
-        {postPathsTopRatedShows && (
-
-            <div className="mt-2 p-4 font-bold">
-                <p className="p-3">Library Name 5</p>
-                <Carousel data={postPathsTopRatedShows} fetchMovieDetail={fetchMovieDetail}/>
-            </div>
-        )}
+        
         </>
     );
 }

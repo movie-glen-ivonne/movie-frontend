@@ -3,30 +3,132 @@
 import React, { useRef, useState } from 'react';
 import ReactPlayer from 'react-player/youtube'
 import DropdownSearch from './DropdownLibrary';
+import { MediaItem } from '../types/Library';
+import Toast from './Toast';
+
+interface Movie {
+    id: number;
+    original_name: string;
+    poster_path: string;
+    first_air_date: string;
+    overview: string;
+}
+
 
 interface DetailsProps {
     data: { 
         id: number,
+        poster_path: string,
         original_name: string,
-        youtube_url: string,
+        video_url: string,
+        media_type: string,
         first_air_date: string,
         overview: string,
         vote_average: number,
-        saved: boolean
+        saved: boolean,
     },
     isModalOpen: boolean;
-    library_id?: number;
-    library_name?: string;
+    library_id?: number | null;
+    library_name?: string | null;
     openModal: () => void;
     closeModal: () => void;
+    removeFromSwiper: (id: number) => void;
+    addToSwiper: (movie: MediaItem) => void;
 }
 
-const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isModalOpen, openModal, closeModal }) => {
+const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isModalOpen, openModal, closeModal, removeFromSwiper, addToSwiper }) => {
 
+    const [showToast, setShowToast] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const addMovieToLibrary = async (libraryId: any, movie: any) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            console.log('hereee');
+            try {
+                console.log(movie);
+                const res = await fetch(`http://localhost:3001/api/managelibrary/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        libraryId,
+                        movie: {
+                            id: movie.id,
+                            original_name: movie.original_name,
+                            first_air_date: movie.first_air_date,
+                            poster_path: movie.poster_path,
+                            overview: movie.overview,
+                            vote_average: movie.vote_average,
+                            video_url: movie.video_url,
+                            media_type: movie.media_type,
+                            saved: true,
+                        }
+                    }),
+                });
     
-    const removeFromLibrary = (id: number) => {
-        console.log(id);
-    }
+                if (res.ok) {
+                    setIsError(false);
+                    setMessage('Movie added to the library!');
+                    data.saved = true
+                    addToSwiper({
+                        poster_path: data.poster_path,
+                        id: data.id,
+                        media_type: data.media_type,
+                      });
+                } else {
+                    const errorData = await res.json();
+                    setIsError(true);
+                    setMessage(errorData.message || 'Failed to add movie to library!');
+                }
+            } catch (error) {
+                setIsError(true);
+                setMessage('An error occurred while adding the movie.');
+            } finally {
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 4000);
+            }
+        }
+    };
+    const removeMovieFromLibrary = async (libraryId: any, movie: Movie) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                console.log('hereee');
+                const res = await fetch(`http://localhost:3001/api/managelibrary/remove`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        libraryId,
+                        idMovie: data.id,
+                    }),
+                });
+    
+                if (res.ok) {
+                    setIsError(false);
+                    setMessage('Movie removed from the library!');
+                    data.saved = false
+                    removeFromSwiper(data.id);
+                } else {
+                    const errorData = await res.json();
+                    setIsError(true);
+                    setMessage(errorData.message || 'Failed to remove from library!');
+                }
+            } catch (error) {
+                setIsError(true);
+                setMessage('An error occurred while removing from library.');
+            } finally {
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 4000);
+            }
+        }
+    };
     return (
         <div>
           {/* Button to toggle modal */}
@@ -35,9 +137,9 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
             <div
               tabIndex={-1}
               aria-hidden="true"
-              className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-black bg-opacity-50"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
             >
-              <div className="relative p-4 ">
+              <div className="relative p-[300px] ">
                 {/* Modal Content */}
                 <div className="relative bg-white rounded-lg shadow dark:bg-black">
                   {/* Close Button */}
@@ -67,14 +169,17 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
                   {/* Modal Body */}
                   <div className="pt-14">
 
-                    <ReactPlayer
-                        url={data.youtube_url}
-                        className="react-player"
-                        playing
-                        width="100%"
-                        // height="100%"
-                        controls={false}
-                        />
+                    {data.video_url !== "" && (
+
+                        <ReactPlayer
+                            url={data.video_url}
+                            className="react-player"
+                            playing
+                            width="100%"
+                            // height="100%"
+                            controls={false}
+                            />
+                    )}
                     <h3 className="mb-1 p-5 text-xl font-bold text-gray-900 dark:text-white">
                       {data.original_name}
                     </h3>
@@ -91,34 +196,31 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
 
    
                     {!library_id && !library_name ? (
-                        <DropdownSearch></DropdownSearch>
+                        <DropdownSearch movie={data}></DropdownSearch>
                     ) : (
 
                         data.saved ? (
                             <button
-                                onClick={() => removeFromLibrary(data.id)}
+                                onClick={() => removeMovieFromLibrary(library_id, data)}
                                 type="button"
-                                // style={{ backgroundColor: '#e50914' }}
-                                className="text-white bg-white-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-netflixRed dark:text-white dark:hover:bg-white dark:focus:ring-blue-800"
+                                className="text-white bg-white-700 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-netflixRed dark:text-white dark:hover:bg-red dark:hover:text-white"
                                 >
                                 Remove from library
                             </button>
                         ) : (
                             <button
-                                onClick={() => removeFromLibrary(data.id)}
+                                onClick={() => addMovieToLibrary(library_id, data)}
                                 type="button"
-                                // style={{ backgroundColor: '#e50914' }}
                                 className="text-white bg-white-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-white dark:text-black dark:hover:bg-netflixRed dark:hover:text-white dark:focus:ring-blue-800"
                                 >
                                 Add to library
                             </button>
                         )
-                
                     )}
                       <button
                         onClick={closeModal}
                         type="button"
-                        className="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                        className="py-1.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                       >
                         Close
                       </button>
@@ -126,6 +228,13 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
                   </div>
                 </div>
               </div>
+              {showToast && (
+                <Toast 
+                    message={message} 
+                    onClose={() => setShowToast(false)} 
+                    type={isError ? 'error' : 'success'}
+                />
+            )}
             </div>
           )}
         </div>

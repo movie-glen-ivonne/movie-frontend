@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Library } from '../types/Library';  // Assume the types are defined in a separate file
 
 interface MovieContextType {
   details: any;
@@ -8,16 +9,29 @@ interface MovieContextType {
   posterPathsTrendingShows: any;
   postPathsTopRatedShows: any;
   posterPathsTopRatedMovies: any;
+  userLibraries: Library[];
+  getUserLibraries: () => void;
   fetchMovieDetail: () => void;  // Include the function to update the details
 }
 
+const defaultMovieContext: MovieContextType = {
+    details: null,
+    posterPathsTrendingMovies: null,
+    posterPathsTrendingShows: null,
+    postPathsTopRatedShows: null,
+    posterPathsTopRatedMovies: null,
+    userLibraries: [],
+    getUserLibraries: () => {},
+    fetchMovieDetail: () => {},
+};
+  
 interface MediaItem {
     poster_path: string;
     media_type: string;
     id: number;
 }
 
-const MovieContext = createContext<MovieContextType | null>(null);
+const MovieContext = createContext<MovieContextType>(defaultMovieContext);
 
 export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
   const [details, setDetails] = useState<any>(null);
@@ -25,15 +39,15 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
   const [posterPathsTrendingShows, setPosterPathsTrendingShows] = useState<MediaItem[] | null>(null);
   const [postPathsTopRatedShows, setPostPathsTopRatedShows] = useState<MediaItem[] | null>(null);
   const [posterPathsTopRatedMovies, setPosterPathsTopRatedMovies] = useState<MediaItem[] | null>(null);
-
+  const [userLibraries, setUserLibraries] = useState<Library[]>([]);
 
   useEffect(() => {
     getTrendingMovies();
     getTrendingShows();
-    getTopRatedTVShows();
+    getTopRatedShows();
     getTopRatedMovies();
+    getUserLibraries();
   }, []);
-
 
   const fetchMovieDetail = async () => {
     setDetails({
@@ -45,89 +59,84 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const getTrendingMovies = async () => {
-    const res = await fetch(`https://api.themoviedb.org/3/trending/movie/week?language=en-US`, {
-      method: 'GET',
-      headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-    });
+    const getTrendingMovies = async () => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:3001/api/trending/movies`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setPosterPathsTrendingMovies(data);
+        }
+    };
 
-    if (res.ok) {
+    const getTrendingShows = async () => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:3001/api/trending/shows`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setPosterPathsTrendingShows(data);
+        }
+    };
 
-      const data = await res.json();
-      const data_serialized = (data.results as MediaItem[])
-      .filter(item => item.poster_path !== null)
-      .map(item => ({
-        poster_path: item.poster_path,
-        media_type: 'movie',
-        id: item.id
-      }));
+    const getTopRatedMovies = async () => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:3001/api/top-rated/movies`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setPosterPathsTopRatedMovies(data);
+        }
+    };
 
-      setPosterPathsTrendingMovies(data_serialized)
+    const getTopRatedShows = async () => {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`http://localhost:3001/api/top-rated/shows`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setPostPathsTopRatedShows(data);
+        }
+    };
+
+
+    const getUserLibraries = async () => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            
+            const res = await fetch(`http://localhost:3001/api/libraries`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` },
+            });
+        
+            if (res.ok) {
+                if (res.status === 204) {
+                    console.log('No content available.');
+                    return;
+                }
+                const data: Library[] = await res.json()
+
+                setUserLibraries(data)
+            }
+        }
     }
-
-  }
-  const getTrendingShows = async () => {
-    const res = await fetch(`https://api.themoviedb.org/3/trending/tv/week?language=en-US`, {
-      method: 'GET',
-      headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-    });
-
-    if (res.ok) {
-
-      const data = await res.json();
-      const data_serialized = (data.results as MediaItem[])
-      .filter(item => item.poster_path !== null)
-      .map(item => ({
-        poster_path: item.poster_path,
-        media_type: 'tv',
-        id: item.id
-      }));
-      setPosterPathsTrendingShows(data_serialized)
-    }
-
-  }
-  const getTopRatedTVShows = async () => {
-    const res = await fetch(`https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1`, {
-      method: 'GET',
-      headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-    });
-
-    if (res.ok) {
-
-      const data = await res.json();
-      const data_serialized = (data.results as MediaItem[])
-      .filter(item => item.poster_path !== null)
-      .map(item => ({
-        poster_path: item.poster_path,
-        media_type: 'tv',
-        id: item.id
-      }));
-
-      setPostPathsTopRatedShows(data_serialized)
-    }
-
-  }
-  const getTopRatedMovies = async () => {
-    const res = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`, {
-      method: 'GET',
-      headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-    });
-
-    if (res.ok) {
-
-      const data = await res.json();
-      const data_serialized = (data.results as MediaItem[])
-      .filter(item => item.poster_path !== null)
-      .map(item => ({
-        poster_path: item.poster_path,
-        media_type: 'movie',
-        id: item.id
-      }));
-
-      setPosterPathsTopRatedMovies(data_serialized)
-    }
-
-  }
 
   return (
     <MovieContext.Provider value={{ 
@@ -135,7 +144,9 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
         posterPathsTrendingMovies, 
         posterPathsTrendingShows, 
         postPathsTopRatedShows, 
-        posterPathsTopRatedMovies, 
+        posterPathsTopRatedMovies,
+        userLibraries,
+        getUserLibraries,
         fetchMovieDetail     
     }}>
 
@@ -144,4 +155,10 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useMovie = () => useContext(MovieContext);
+export const useMovie = (): MovieContextType => {
+    const context = useContext(MovieContext);
+    if (!context) {
+      throw new Error('useMovie must be used within a MovieProvider');
+    }
+    return context;
+  };

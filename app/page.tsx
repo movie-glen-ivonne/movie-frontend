@@ -1,20 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from "next/image";
 import Carousel from './components/Carousel'
-import { mockdata,  trending_movies_mock, trending_tvshows_mock, topRatedMoviesMock, topRatedTvShowsMock} from './mock-data'
 import Details from './components/Details'
 import { useMovie } from './context/MovieContext';
 import { useAuth } from './context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { MediaItem } from './types/Library';
 
-
-interface MediaItem {
-  poster_path: string;
-  media_type: string;
-  id: number;
-}
 
 export default function Home() {
   const { isAuthenticated, loading } : any = useAuth();
@@ -28,7 +21,7 @@ export default function Home() {
     posterPathsTrendingMovies, 
     posterPathsTrendingShows, 
     postPathsTopRatedShows, 
-    posterPathsTopRatedMovies
+    posterPathsTopRatedMovies,
   } : any = useMovie();
   const router = useRouter();
 
@@ -39,37 +32,39 @@ export default function Home() {
   }, [isAuthenticated, loading, router]);
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
 
-  const fetchMovieDetail =  async (id: number, media_type: string) => {
-      openModal();
+    setDetails(null);
+    setIsModalOpen(false);
+  }
 
-      const res = await fetch(`https://api.themoviedb.org/3/${media_type}/${id}`, {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-      });
-      const details = await res.json();
-      const video  = await fetch(`https://api.themoviedb.org/3/${media_type}/${id}/videos`, {
-        method: 'GET',
-        headers: { 'Authorization': `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4MDY5ZmVhOTU5YWJmMmNjNDY1ZTAzMDIzY2ZkMGRmMCIsIm5iZiI6MTczMjc4NDMxNS45Mjc4NzI3LCJzdWIiOiI2NzQwOTQ5MTVjYWMwNDFjZmFlMjgxODIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.vJNBXM5_i9wgt1cunX51nV9ti8wdqWCPL7ZPZWkHir8` },
-      });
-
-      const video_detail = await video.json();
-      
-      if (details && video_detail) {
+    const fetchMovieDetail =  async (id: number, media_type: string) => {
+        openModal();
         
-        setDetails({
-            id: details.id,
-            youtube_url: (video_detail.results[0]) ? `https://www.youtube.com/watch?v=${video_detail.results[0].key}` : "",
-            poster_path: details.poster_path,
-            first_air_date: media_type == 'movie' ? details.release_date : details.first_air_date,
-            original_name: media_type == 'movie' ? details.original_title : details.original_name,
-            overview: details.overview,
-            vote_average: details.vote_average,
-            saved: false
-        });
-    }
-  };
+        const token = localStorage.getItem('token');
+        if (token) {
+            const res = await fetch(`http://localhost:3001/api/movies/${id}?type=${media_type}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` },
+            });
+            const details = await res.json();
+            
+            if (details) {
+            
+                setDetails({
+                    id: details.id,
+                    video_url: (details.video_url) ? details.video_url : "",
+                    poster_path: details.poster_path,
+                    first_air_date: details.first_air_date,
+                    original_name: details.original_name,
+                    overview: details.overview,
+                    vote_average: details.vote_average,
+                    media_type: details.media_type,
+                    saved: details.saved
+                });
+            }
+        }
+    };
 
   const fetchMoviesAndTvShows = async (query : string) => {
     const token = localStorage.getItem('token');
@@ -77,7 +72,7 @@ export default function Home() {
         try {
           if (query !== "") {
             
-            const res = await fetch(`https://movie-project-bk-413936355529.europe-west1.run.app/api/search/?query=${query}`, {
+            const res = await fetch(`http://localhost:3001/api/search/?query=${query}`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -99,11 +94,14 @@ export default function Home() {
     }
 };
 
-  const handleInputChange = (e : any) => {
-    const newQuery = e.target.value;
-    setQuery(newQuery);
-    fetchMoviesAndTvShows(newQuery);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);  // Update query state as user types
   };
+
+  const handleSearch = () => {
+    fetchMoviesAndTvShows(query); // Use the query state value directly
+  };
+  
 
   return (
     <>
@@ -120,14 +118,34 @@ export default function Home() {
                   <h1 className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-4xl">
                     Search for Movies & TV Shows
                   </h1>
-                  <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
-                    <input
+                  {/* <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8"> */}
+                    {/* <input
                       type="text"
                       value={query} onChange={handleInputChange}
                       placeholder="Search for a movie or TV show"
                       className="block mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
-                    />
-                  </p>
+                    /> */}
+                    <div className="relative mt-8 flex h-10 w-full min-w-[200px] max-w-[24rem]">
+                      <button
+                        className="!absolute right-1 top-1 z-10 select-none rounded bg-netflixRed py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:bg-blue-gray-500 peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
+                        type="button"
+                        onClick={handleSearch}
+                        data-ripple-light="true"
+                      >
+                        Search
+                      </button>
+                      <input
+                        onChange={handleInputChange}
+                        type="email"
+                        className="peer h-full w-full rounded-[7px] border border-blue-white-200 bg-transparent px-3 py-2.5 pr-20 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-red-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                        placeholder=" "
+                        required
+                      />
+                      <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-red-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:!border-red-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:!border-red-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                        Search a Movie or TV Show
+                      </label>
+                    </div>
+                  {/* </p> */}
                 </div>
               </div>
             </main>
@@ -138,17 +156,27 @@ export default function Home() {
 
           <div className="mt-2 p-4 font-bold">
             <p className="p-3">Search "{query}"</p>
+            {postPathMovies.length == 0 && (
+              <p className='p-4'>No movies or shows were found.</p>
+            )}
             <Carousel data={postPathMovies} fetchMovieDetail={fetchMovieDetail}/>
           </div>
         )}
 
-        {posterPathsTrendingMovies && (
 
+        {postPathsTopRatedShows && (
           <div className="mt-2 p-4 font-bold">
-            <p className="p-3">Trending movies</p>
-            <Carousel data={posterPathsTrendingMovies} fetchMovieDetail={fetchMovieDetail}/>
+            <p className="p-3">Top Rated Tv Shows</p> 
+            <Carousel data={postPathsTopRatedShows} fetchMovieDetail={fetchMovieDetail} />
           </div>
-        )} 
+        )}
+        {posterPathsTopRatedMovies && (
+          <div className="mt-2 p-4 font-bold">
+            <p className="p-3">Top Rated Movies</p>
+            <Carousel data={posterPathsTopRatedMovies} fetchMovieDetail={fetchMovieDetail}/>
+          </div>
+        )}
+
 
         {posterPathsTrendingShows && (
           <div className="mt-2 p-4 font-bold">
@@ -157,19 +185,14 @@ export default function Home() {
           </div>
         )}
 
-        {postPathsTopRatedShows && (
-          <div className="mt-2 p-4 font-bold">
-            <p className="p-3">Top Rated Tv Shows</p> 
-            <Carousel data={postPathsTopRatedShows} fetchMovieDetail={fetchMovieDetail} />
-          </div>
-        )}
 
-        {posterPathsTopRatedMovies && (
-          <div className="mt-2 p-4 font-bold">
-            <p className="p-3">Top Rated Movies</p>
-            <Carousel data={posterPathsTopRatedMovies} fetchMovieDetail={fetchMovieDetail}/>
-          </div>
-        )}
+        {posterPathsTrendingMovies && (
+
+        <div className="mt-2 p-4 font-bold">
+          <p className="p-3">Trending movies</p>
+          <Carousel data={posterPathsTrendingMovies} fetchMovieDetail={fetchMovieDetail}/>
+        </div>
+        )} 
     </>
   );
 }

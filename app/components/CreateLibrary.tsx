@@ -1,16 +1,21 @@
 'use client'
 
 import React, { useState } from 'react';
+import Toast from './Toast';
+import { useMovie } from '../context/MovieContext';
 
 interface DetailsProps {
     isCreateLibraryModalOpen: boolean;
     openCreateLibraryModal: () => void;
     closeCreateLibraryModal: () => void;
+    showToast: (message: string, type: 'success' | 'error') => void; // Add this prop
+
 }
 
-const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openCreateLibraryModal, closeCreateLibraryModal }) => {
+const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openCreateLibraryModal, closeCreateLibraryModal, showToast }) => {
     const [libraryName, setLibraryName] = useState('');
-    
+    const [errorMessage, setErrorMessage] = useState('');
+    const { getUserLibraries } = useMovie(); // Access the function
 
     // Handle input change for the library name
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,36 +27,45 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openC
         event.preventDefault();
 
         if (!libraryName) {
-            // Optionally, show an error message if the input is empty
             alert('Please enter a library name');
             return;
         }
 
         // Create the payload to send in the POST request
         const payload = {
-            library_name: libraryName
+            name: libraryName
         };
 
-        try {
-            // Send the POST request with the library name
-            const response = await fetch('/api/create-library', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                // Send the POST request with the library name
+                const response = await fetch('http://localhost:3001/api/libraries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Library created:', result);
-                // Optionally, close the modal or reset the form
-                closeCreateLibraryModal();
-            } else {
-                console.error('Error creating library:', response.statusText);
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Library created:', result);
+       
+                    setErrorMessage('')
+                    setLibraryName('')
+                    closeCreateLibraryModal();
+                    showToast('Library was added successfully!', 'success');
+                    await getUserLibraries();
+                } else {
+                    const result = await response.json();
+                    setErrorMessage(result.message)
+                    showToast('Error creating library', 'error');
+                }
+            } catch (error) {
+                showToast('Error creating library', 'error');
             }
-        } catch (error) {
-            console.error('Error:', error);
         }
     };
 
@@ -88,6 +102,18 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openC
                                             onChange={handleInputChange} // Capture the input value
                                             required
                                         />
+                                        {errorMessage !== "" && (
+
+                                            <p className="text-xs text-red-500 flex items-center mt-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" fill="currentColor" className="mr-2"
+                                                viewBox="0 0 512 512">
+                                                <path
+                                                    d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                                                    data-original="#000000" />
+                                                </svg>
+                                                {errorMessage}
+                                            </p>
+                                        )}
                                     </div>
 
                                     <button

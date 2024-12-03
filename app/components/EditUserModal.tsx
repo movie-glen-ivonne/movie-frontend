@@ -17,11 +17,10 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, user, onClose, on
   const [isAdmin, setIsAdmin] = useState(user.isAdmin); // Controlled input for isAdmin
 
   const handleConfirm = () => {
-    // Pass updated user data back to the parent
     onConfirm({ id: user.id, name, isAdmin });
   };
 
-  if (!isOpen) return null; // Return nothing if the modal isn't open
+  if (!isOpen) return null;
 
   return (
     <div
