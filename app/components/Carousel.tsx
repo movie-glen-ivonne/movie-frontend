@@ -19,6 +19,11 @@ import { Keyboard, Scrollbar, Navigation, Pagination } from 'swiper/modules';
 
 const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
 
+
+  const myLoader = ({ src } : any) => {
+    return `https://image.tmdb.org/t/p/w400${src}`;
+  };
+
   return (
     <>
       <Swiper
@@ -42,11 +47,12 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
         
           <SwiperSlide key={index}>
             <Image
-              src={`https://image.tmdb.org/t/p/w400${item.poster_path}`}
+              loader={myLoader}
+              src={item.poster_path} // Pass the relative path only
               alt={`Slide ${index + 1}`}
-              onClick={() => fetchMovieDetail(item.id, item.media_type)}  // Call fetchMovieDetail on click
+              onClick={() => fetchMovieDetail(item.id, item.media_type)}
               className="cursor-pointer"
-              width={400} 
+              width={400}
               height={400}
             />
         </SwiperSlide>
