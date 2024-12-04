@@ -161,6 +161,10 @@ export default function Admin() {
           }
         }
       };
+    const myLoader = ({ src } : any) => {
+      return `https://ui-avatars.com/api/?name=${src}&background=random`;
+    };
+    
     const handleFilterClick = (filterType: string) => {
         setFilter(filterType);
       };
@@ -274,8 +278,9 @@ export default function Admin() {
                     <tr key={data.id}>
                     <td className="p-4 border-b border-blue-gray-50">
                         <div className="flex items-center gap-3">
-                        <Image 
-                            src="https://demos.creative-tim.com/test/corporate-ui-dashboard/assets/img/team-3.jpg"
+                        <Image
+                            loader={myLoader}
+                            src={data.name.toUpperCase()}
                             alt="John Michael" className="relative inline-block h-9 w-9 !rounded-full object-cover object-center"
                             width={500} 
                             height={300}

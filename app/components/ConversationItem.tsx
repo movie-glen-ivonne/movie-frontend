@@ -12,14 +12,19 @@ interface ConversationItemProps {
 
 const ConversationItem: React.FC<ConversationItemProps> = ({ active, time, name, message, id, handleJoinRoom }) => {
     const _class = active ? 'bg-selfMessage hover:bg-selfMessage' : 'bg-transparent hover:bg-black'; // Apply active background
-
+    const myLoader = ({ src } : any) => {
+        return `https://ui-avatars.com/api/?name=${src}&background=random`;
+    };
+    
+    
     return (
         <div onClick={handleJoinRoom} key={id} className={'rounded-2xl ' + _class}>
             <div className={'conversation-item p-1 m-1 rounded-md ' + _class}>
                 <div className={'flex items-center p-2 cursor-pointer'}>
                     <div className="w-7 h-7 m-1">
                          <Image
-                            src={`https://ui-avatars.com/api/?name=${name.toUpperCase()}&background=random`}
+                            loader={myLoader}
+                            src={name.toUpperCase()}
                             alt={name ? name : "test"}
                             width={45}
                             height={45}

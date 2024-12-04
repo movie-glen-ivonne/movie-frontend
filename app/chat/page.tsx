@@ -13,7 +13,7 @@ import { io, Socket } from "socket.io-client";
 interface Room {
     id: string;
     name: string;
-    participants: string[]; // Include participants field
+    participants: string[];
 }
 
 const Chat = () => {
@@ -43,7 +43,7 @@ const Chat = () => {
             setSearch(searchValue);
 
             if (searchValue.trim() === "") {
-                setSearchResults([]); // Clear results when input is empty
+                setSearchResults([]);
                 return;
             }
 
@@ -79,7 +79,7 @@ const Chat = () => {
             try {
                 const response = await apiClient.get("/rooms", {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Add the token here
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 if (!response.data) {
@@ -116,10 +116,10 @@ const Chat = () => {
     
           const res = await apiClient.post(
             '/rooms',
-            { userId: user.id, email: user.email }, // Request body
+            { userId: user.id, email: user.email },
             {
               headers: {
-                Authorization: `Bearer ${token}`, // Token in headers
+                Authorization: `Bearer ${token}`,
               },
             }
           );
@@ -137,7 +137,6 @@ const Chat = () => {
 
         setSelectedRoomName(name);
         setSelectedRoomId(roomId);
-        console.log(name);
         setUserId(user?.id);
         fetchMessages(roomId);
         socketClient.emit("join", { roomId });
@@ -162,7 +161,6 @@ const Chat = () => {
     return (
       <div className="">
         <div className="flex">
-          {/* Sidebar */}
           <div className="w-80 px-4 hidden md:block border-r-[1px] border-selfMessage">
             <div className="overflow-y-auto">
               <div className="text-xl text-gray-600 dark:text-gray-200 p-3">Chat</div>
@@ -211,7 +209,6 @@ const Chat = () => {
               <Conversation rooms={rooms.slice().reverse()} handleJoinRoom={handleJoinRoom}/>
             </div>
           </div>
-          {/* Messages Area */}
             {userId && selectedRoomName && messages && (
             <div className="flex-grow p-2 rounded-md">
                     <Messages id={userId} room_name={selectedRoomName} messages={messages} />
