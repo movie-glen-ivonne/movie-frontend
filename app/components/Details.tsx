@@ -48,7 +48,7 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
             console.log('here2ee');
             try {
                 console.log(movie);
-                const res = await fetch(`http://localhost:3001/api/managelibrary/add`, {
+                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/managelibrary/add`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -99,7 +99,7 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
         if (token) {
             try {
                 console.log('hereee');
-                const res = await fetch(`http://localhost:3001/api/managelibrary/remove`, {
+                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/managelibrary/remove`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
