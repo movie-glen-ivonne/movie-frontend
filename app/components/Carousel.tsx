@@ -27,8 +27,8 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
   return (
     <>
       <Swiper
-        slidesPerView={4}
-        spaceBetween={30}
+        slidesPerView={5}
+        spaceBetween={20}
         centeredSlides={false}
         grabCursor={true}
         keyboard={{
