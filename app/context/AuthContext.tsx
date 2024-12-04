@@ -24,8 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem('token');
     if (token) {
       fetchProfile();
-      setLoading(false)
-      setIsAuthenticated(true);
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/profile`, {
+        const res = await fetch(`http://localhost:3001/api/profile`, {
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` },
         });
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Register function
   const register = async (name: string, email: string, password: string) => {
-    const res = await fetch('https://movie-project-bk-630243095989.us-central1.run.app/api/register', {
+    const res = await fetch('http://localhost:3001/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Login function
   const login = async (email: string, password: string) => {
-    const res = await fetch('https://movie-project-bk-630243095989.us-central1.run.app/api/login', {
+    const res = await fetch('http://localhost:3001/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

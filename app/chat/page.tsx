@@ -6,6 +6,7 @@ import Messages from '../components/Messages';
 import { useAuth } from '../context/AuthContext';
 import apiClient from "@/global/apiClient";
 import { toast } from "sonner";
+import { useRouter } from 'next/navigation';
 import MessageInput from  "../components/MessageInput";
 
 import { io, Socket } from "socket.io-client";
@@ -19,16 +20,16 @@ interface Room {
 const Chat = () => {
     const [search, setSearch] = useState("");
     const [searchResults, setSearchResults] = useState([]);
-    const { user } = useAuth() ?? { user: null };
+    const { user, isAuthenticated, loading } : any = useAuth()
     const [rooms, setRooms] = useState<Room[]>([]);
     const [selectedRoomId, setSelectedRoomId] = useState("");
     const [selectedRoomName, setSelectedRoomName] = useState("");
     const [messages, setMessages] = useState<any[]>([]);
     const [token, setToken] = useState('');
     const [userId, setUserId] = useState('');
+    const router = useRouter();
 
-
-    const socketClient: Socket = io("https://movie-project-bk-630243095989.us-central1.run.app", {
+    const socketClient: Socket = io("http://localhost:3001", {
         withCredentials: true,
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
@@ -48,7 +49,7 @@ const Chat = () => {
             }
 
             try {
-                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/search-users/?search=${searchValue}`, {
+                const res = await fetch(`http://localhost:3001/api/search-users/?search=${searchValue}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                     });
@@ -148,14 +149,23 @@ const Chat = () => {
             socketClient.off("message");
         };
     };
-
-    useEffect(() => {
-        fetchRooms();
-    }, []);
+    
     useEffect(() => {
         const token = localStorage.getItem('token');
         setToken(token || '');
     }, [user]);
+    
+    useEffect(() => {
+      if (!loading && !isAuthenticated) {
+        router.push('/login');
+      } 
+
+      if (token !== "") {
+
+        fetchRooms();
+      }
+    }, [isAuthenticated, loading, router]);
+
 
       
     return (

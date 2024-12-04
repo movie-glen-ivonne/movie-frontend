@@ -54,7 +54,7 @@ export default function Home() {
         
         const token = localStorage.getItem('token');
         if (token) {
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/movies/${id}?type=${media_type}`, {
+            const res = await fetch(`http://localhost:3001/api/movies/${id}?type=${media_type}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -84,7 +84,7 @@ export default function Home() {
 
         const token = localStorage.getItem('token');
         if (token) {
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/recommendations/${library_id}`, {
+            const res = await fetch(`http://localhost:3001/api/recommendations/${library_id}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -112,6 +112,7 @@ export default function Home() {
               
             setSelectedLibrarId(selectedLibrary.id);
             setSelectedLibraryName(selectedLibrary.name);
+            setRecommendations([])
 
             if (data.length !== 0) {
 
@@ -196,12 +197,30 @@ export default function Home() {
         )}
         
         {recommendations.length !== 0 && (
-
             <div className="p-4 font-bold">
+
                 <p className="p-3">Recommendations</p>
                 <Carousel data={recommendations} fetchMovieDetail={fetchMovieDetail} />
             </div>
         )}
+         {recommendations.length == 0 && selectedLibraryId && selectedLibraryName && moviesData.length !== 0 && (
+        
+            <div className='mb-12'>
+                <div className="p-4 font-bold">
+
+                    <p className="p-3">Recommendations</p>
+                </div>
+                <div className="flex items-center justify-center mt-12">
+                <div
+                    className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-netflixRed border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                    role="status">
+                </div>
+                    <span className="p-4 text-lg">
+                        Getting recommendations<span className="animate-blink text-netflixRed">...</span>
+                    </span>
+                </div>
+            </div>
+         )}
         
         </>
     );

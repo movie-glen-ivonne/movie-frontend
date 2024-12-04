@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Carousel from './components/Carousel'
 import Details from './components/Details'
 import { useMovie } from './context/MovieContext';
@@ -17,6 +17,8 @@ export default function Home() {
   const [movies, setMovies] = useState(null);
   const [postPathMovies, setPostPathMovies] = useState<MediaItem[] | null>(null);
   const [message, setMessage] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const {
     posterPathsTrendingMovies, 
     posterPathsTrendingShows, 
@@ -43,7 +45,7 @@ export default function Home() {
         
         const token = localStorage.getItem('token');
         if (token) {
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/movies/${id}?type=${media_type}`, {
+            const res = await fetch(`http://localhost:3001/api/movies/${id}?type=${media_type}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -69,17 +71,21 @@ export default function Home() {
   const fetchMoviesAndTvShows = async (query : string) => {
     const token = localStorage.getItem('token');
     if (token) {
+        setPostPathMovies(null)
+        setSearchLoading(true);
         try {
           if (query !== "") {
             
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/search/?query=${query}`, {
+            const res = await fetch(`http://localhost:3001/api/search/?query=${query}`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });
             if (res.ok) {
                 const data = await res.json();
+                setSearchLoading(false);
                 setPostPathMovies(data)
             } else {
+              setSearchLoading(false);
               setMessage('No songs saved!')
               console.log(message);
             }
@@ -91,17 +97,16 @@ export default function Home() {
             console.log(err);
             setMessage('Error fetching profile songs')
         } finally {
-            // console.log('here2')
+           setSearchLoading(false);
         }
     }
 };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);  // Update query state as user types
-  };
-
   const handleSearch = () => {
-    fetchMoviesAndTvShows(query); // Use the query state value directly
+
+    const query = inputRef.current?.value || '';
+    setQuery(query);
+    fetchMoviesAndTvShows(query);
   };
   
 
@@ -120,13 +125,6 @@ export default function Home() {
                   <h1 className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-4xl">
                     Search for Movies & TV Shows
                   </h1>
-                  {/* <p className="mt-8 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8"> */}
-                    {/* <input
-                      type="text"
-                      value={query} onChange={handleInputChange}
-                      placeholder="Search for a movie or TV show"
-                      className="block mt-2 w-full placeholder-gray-400/70 dark:placeholder-gray-500 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-gray-700 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
-                    /> */}
                     <div className="relative mt-8 flex h-10 w-full min-w-[200px] max-w-[24rem]">
                       <button
                         className="!absolute right-1 top-1 z-10 select-none rounded bg-netflixRed py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:bg-blue-gray-500 peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
@@ -137,7 +135,7 @@ export default function Home() {
                         Search
                       </button>
                       <input
-                        onChange={handleInputChange}
+                        ref={inputRef}
                         type="email"
                         className="peer h-full w-full rounded-[7px] border border-blue-white-200 bg-transparent px-3 py-2.5 pr-20 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-red-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                         placeholder=" "
@@ -147,7 +145,7 @@ export default function Home() {
                         Search a Movie or TV Show
                       </label>
                     </div>
-                  {/* </p> */}
+      
                 </div>
               </div>
             </main>
@@ -162,6 +160,19 @@ export default function Home() {
               <p className='p-4'>No movies or shows were found.</p>
             )}
             <Carousel data={postPathMovies} fetchMovieDetail={fetchMovieDetail}/>
+          </div>
+        )}
+
+        {!postPathMovies && query !== "" && (
+          <div className="mt-2 p-4 font-bold">
+            <p className="p-3">{`Search "${query}"`}</p>
+
+              <div className="flex items-center justify-center mt-12">
+              <div
+                  className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-netflixRed border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status">
+              </div>
+              </div>
           </div>
         )}
 

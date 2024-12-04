@@ -22,6 +22,15 @@ export default {
         selfMessage: '#2B2B40',
         otherMessage: '#292929'
       },
+      animation: {
+        blink: 'blink 1s steps(2, start) infinite',
+      },
+      keyframes: {
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        },
+      },
     },
   },
   plugins: [],
