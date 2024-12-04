@@ -25,7 +25,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
 
     useEffect(() => {
         getUserLibraries();
-    }, []);
+    });
     
 
     const getUserLibraries = async () => {
@@ -115,6 +115,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                     setMessage(errorData.message || 'Failed to add movie to library!');
                 }
             } catch (error) {
+                console.log(error);
                 setIsError(true);
                 setMessage('An error occurred while adding the movie.');
             } finally {
@@ -149,6 +150,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                 }
             } catch (error) {
                 setIsError(true);
+                console.log(error);
                 setMessage('An error occurred while removing from library.');
             } finally {
                 setShowToast(true);

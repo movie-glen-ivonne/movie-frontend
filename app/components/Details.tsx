@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import ReactPlayer from 'react-player/youtube'
 import DropdownSearch from './DropdownLibrary';
 import { MediaItem } from '../types/Library';
@@ -30,13 +30,13 @@ interface DetailsProps {
     isModalOpen: boolean;
     library_id?: number | null;
     library_name?: string | null;
-    openModal: () => void;
+    // openModal: () => void;
     closeModal: () => void;
     removeFromSwiper: (id: number) => void;
     addToSwiper: (movie: MediaItem) => void;
 }
 
-const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isModalOpen, openModal, closeModal, removeFromSwiper, addToSwiper }) => {
+const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isModalOpen, closeModal, removeFromSwiper, addToSwiper }) => {
 
     const [showToast, setShowToast] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -85,6 +85,7 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
                     setMessage(errorData.message || 'Failed to add movie to library!');
                 }
             } catch (error) {
+                console.log(error);
                 setIsError(true);
                 setMessage('An error occurred while adding the movie.');
             } finally {
@@ -96,6 +97,7 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
     const removeMovieFromLibrary = async (libraryId: any, movie: Movie) => {
         const token = localStorage.getItem('token');
         if (token) {
+            console.log(movie);
             try {
                 console.log('hereee');
                 const res = await fetch(`http://localhost:3001/api/managelibrary/remove`, {
@@ -122,6 +124,7 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
                 }
             } catch (error) {
                 setIsError(true);
+                console.log(error);
                 setMessage('An error occurred while removing from library.');
             } finally {
                 setShowToast(true);

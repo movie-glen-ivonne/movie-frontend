@@ -12,8 +12,8 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const router = useRouter()
 
-    const {register}: any = useAuth()
-
+    const { register } = useAuth() ?? { register: () => Promise.resolve({ message: '' }) };
+    
     const handleSubmit = async (e : React.FormEvent) => {
         e.preventDefault()
         try{
@@ -37,8 +37,8 @@ const Register = () => {
 
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                        alt="Your Company"
+                    <Image
+                        alt="Netflix"
                         src="/image.png"
                         className="mx-auto h-10 w-auto"
                         width={500} 

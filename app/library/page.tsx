@@ -1,9 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from "next/image";
 import Carousel from '../components/Carousel'
-import { mockdata,  trending_movies_mock, trending_tvshows_mock, topRatedMoviesMock, topRatedTvShowsMock} from '../mock-data'
 import Details from '../components/Details'
 import CreateLibrary from '../components/CreateLibrary'
 import Toast from '../components/Toast'
@@ -48,7 +46,6 @@ export default function Home() {
       if (!loading && !isAuthenticated) {
         router.push('/login');
       } 
-      console.log(userLibraries);
     }, [isAuthenticated, loading, router]);
 
     
@@ -96,7 +93,6 @@ export default function Home() {
 
                 const details = await res.json();
                 setRecommendations(details);
-                // console.log(details);
             }
         }
     }
@@ -144,8 +140,8 @@ export default function Home() {
                     />
                 </div>
             )}
-            {details && <Details data={details} library_id={selectedLibraryId} library_name={selectedLibraryName} isModalOpen={isModalOpen} openModal={openModal} closeModal={closeModal} removeFromSwiper={handleRemoveFromSwiper} addToSwiper={handleAddToSwiper}/>}
-            <CreateLibrary isCreateLibraryModalOpen={isCreateLibraryModalOpen} openCreateLibraryModal={openCreateLibraryModal} closeCreateLibraryModal={closeCreateLibraryModal} showToast={handleShowToast}/>
+            {details && <Details data={details} library_id={selectedLibraryId} library_name={selectedLibraryName} isModalOpen={isModalOpen} closeModal={closeModal} removeFromSwiper={handleRemoveFromSwiper} addToSwiper={handleAddToSwiper}/>}
+            <CreateLibrary isCreateLibraryModalOpen={isCreateLibraryModalOpen} closeCreateLibraryModal={closeCreateLibraryModal} showToast={handleShowToast}/>
             <div className="relative">
             <div className="absolute inset-0 bg-[url('/arcane2.webp')] bg-cover bg-[center_top_30%]">
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -163,7 +159,7 @@ export default function Home() {
             </div>
             </div>
         
-        <div className="flex justify-center gap-6 items-center pt-5 px-4">
+        <div className="flex justify-center gap-6 items-center pt-7 px-4">
 
 
             <div>
@@ -171,7 +167,7 @@ export default function Home() {
                    
                 onChange={handleLibraryChange}
                 id="countries"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white-700 dark:border-gray-600 dark:placeholder-black-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
                 <option defaultValue="">Choose a library</option>
                 

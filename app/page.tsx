@@ -81,9 +81,11 @@ export default function Home() {
                 setPostPathMovies(data)
             } else {
               setMessage('No songs saved!')
+              console.log(message);
             }
           } else {
             setMovies(null)
+            console.log(movies);
           }
         } catch (err) {
             console.log(err);
@@ -105,7 +107,7 @@ export default function Home() {
 
   return (
     <>
-        {details && <Details data={details} isModalOpen={isModalOpen} openModal={openModal} closeModal={closeModal} />} 
+        {details && <Details data={details} isModalOpen={isModalOpen} closeModal={closeModal} removeFromSwiper={() => {}} addToSwiper={() => {}} />} 
 
         <div className="relative h-96 w-full">
           <div className="absolute inset-0 bg-[url('/arcane.png')] bg-cover bg-center">
@@ -155,7 +157,7 @@ export default function Home() {
         {postPathMovies && query !== "" && (
 
           <div className="mt-2 p-4 font-bold">
-            <p className="p-3">Search "{query}"</p>
+            <p className="p-3">{`Search "${query}"`}</p>
             {postPathMovies.length == 0 && (
               <p className='p-4'>No movies or shows were found.</p>
             )}
@@ -164,6 +166,19 @@ export default function Home() {
         )}
 
 
+        {posterPathsTrendingMovies && (
+
+          <div className="mt-2 p-4 font-bold">
+            <p className="p-3">Trending movies</p>
+            <Carousel data={posterPathsTrendingMovies} fetchMovieDetail={fetchMovieDetail}/>
+          </div>
+        )} 
+        {posterPathsTrendingShows && (
+          <div className="mt-2 p-4 font-bold">
+            <p className="p-3">Trending TV Shows</p>
+            <Carousel data={posterPathsTrendingShows} fetchMovieDetail={fetchMovieDetail}/>
+          </div>
+        )}
         {postPathsTopRatedShows && (
           <div className="mt-2 p-4 font-bold">
             <p className="p-3">Top Rated Tv Shows</p> 
@@ -177,22 +192,6 @@ export default function Home() {
           </div>
         )}
 
-
-        {posterPathsTrendingShows && (
-          <div className="mt-2 p-4 font-bold">
-            <p className="p-3">Trending TV Shows</p>
-            <Carousel data={posterPathsTrendingShows} fetchMovieDetail={fetchMovieDetail}/>
-          </div>
-        )}
-
-
-        {posterPathsTrendingMovies && (
-
-        <div className="mt-2 p-4 font-bold">
-          <p className="p-3">Trending movies</p>
-          <Carousel data={posterPathsTrendingMovies} fetchMovieDetail={fetchMovieDetail}/>
-        </div>
-        )} 
     </>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Library } from '../types/Library';  // Assume the types are defined in a separate file
+import { useAuth } from './AuthContext';
 
 interface MovieContextType {
   details: any;
@@ -34,6 +35,8 @@ interface MediaItem {
 const MovieContext = createContext<MovieContextType>(defaultMovieContext);
 
 export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } : any = useAuth();  // Access isAuthenticated from AuthContext
+
   const [details, setDetails] = useState<any>(null);
   const [posterPathsTrendingMovies, setPosterPathsTrendingMovies] = useState<MediaItem[] | null>(null);
   const [posterPathsTrendingShows, setPosterPathsTrendingShows] = useState<MediaItem[] | null>(null);
@@ -42,12 +45,14 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
   const [userLibraries, setUserLibraries] = useState<Library[]>([]);
 
   useEffect(() => {
-    getTrendingMovies();
-    getTrendingShows();
-    getTopRatedShows();
-    getTopRatedMovies();
-    getUserLibraries();
-  }, []);
+    if (isAuthenticated) {
+      getTrendingMovies();
+      getTrendingShows();
+      getTopRatedShows();
+      getTopRatedMovies();
+      getUserLibraries();
+    }
+  }, [isAuthenticated]);
 
   const fetchMovieDetail = async () => {
     setDetails({

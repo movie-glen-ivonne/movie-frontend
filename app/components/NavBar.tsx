@@ -10,19 +10,20 @@ import Image from 'next/image'
 const navigation = [
   { name: 'Search', href: '/' },
   { name: 'My Library', href: '/library' },
+  { name: 'Chat', href: '/chat'}
 ]
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { isAuthenticated, loading, logout } : any = useAuth();
+  const { isAuthenticated, loading, logout, isAdmin } : any = useAuth();
 
   return (
     <header>
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8">
+      <nav aria-label="Global" className="mx-auto flex items-center justify-between gap-x-6 p-6 lg:px-8">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Netflix</span>
-            <img
+            <Image
               alt="netflix logo"
               src="/image.png"
               className="h-8 w-auto"
@@ -38,6 +39,11 @@ export default function NavBar() {
                 {item.name}
               </a>
             ))}
+            {isAdmin && (
+              <a href="/admin" className="text-sm/6 font-semibold text-white-900">
+                Manage Users
+              </a>
+            )}
           </div>
         )}
 
@@ -86,7 +92,7 @@ export default function NavBar() {
           <div className="flex items-center gap-x-6">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Bauhaus</span>
-              <img
+              <Image
                 alt=""
                 src="/image.png"
                 className="h-8 w-auto"
@@ -135,6 +141,11 @@ export default function NavBar() {
                     {item.name}
                   </a>
                 ))}
+                {isAdmin && (
+                    <a href="/admin" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white-900 hover:bg-gray-50 hover:text-black">
+                        Manage Users
+                    </a>
+                )}
               </div>
               {!isAuthenticated && !loading && (
                 <div className="py-6">

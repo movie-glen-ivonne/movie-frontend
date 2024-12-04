@@ -1,28 +1,24 @@
 'use client'
 
 import React, { useState } from 'react';
-import Toast from './Toast';
 import { useMovie } from '../context/MovieContext';
 
 interface DetailsProps {
     isCreateLibraryModalOpen: boolean;
-    openCreateLibraryModal: () => void;
     closeCreateLibraryModal: () => void;
     showToast: (message: string, type: 'success' | 'error') => void; // Add this prop
 
 }
 
-const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openCreateLibraryModal, closeCreateLibraryModal, showToast }) => {
+const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, closeCreateLibraryModal, showToast }) => {
     const [libraryName, setLibraryName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const { getUserLibraries } = useMovie(); // Access the function
+    const { getUserLibraries } = useMovie();
 
-    // Handle input change for the library name
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLibraryName(event.target.value);
     };
 
-    // Handle form submission
     const handleFormSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
@@ -31,7 +27,6 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openC
             return;
         }
 
-        // Create the payload to send in the POST request
         const payload = {
             name: libraryName
         };
@@ -39,7 +34,6 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openC
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                // Send the POST request with the library name
                 const response = await fetch('http://localhost:3001/api/libraries', {
                     method: 'POST',
                     headers: {
@@ -65,6 +59,7 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, openC
                 }
             } catch (error) {
                 showToast('Error creating library', 'error');
+                console.log(error);
             }
         }
     };

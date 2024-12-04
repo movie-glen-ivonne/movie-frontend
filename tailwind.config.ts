@@ -11,10 +11,16 @@ export default {
       backgroundImage: {
         'trending': "/arcane.png",
       },
+      zIndex: {
+        '100': '100',
+        '999': '999',
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
         netflixRed: '#e50914',
+        selfMessage: '#2B2B40',
+        otherMessage: '#292929'
       },
     },
   },

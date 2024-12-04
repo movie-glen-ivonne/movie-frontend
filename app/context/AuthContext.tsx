@@ -1,14 +1,14 @@
 'use client'
 
-import { trackSynchronousPlatformIOAccessInDev } from 'next/dist/server/app-render/dynamic-rendering';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
   user: any;
   isAuthenticated:  boolean;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  isAdmin: boolean;
+  login: (email: string, password: string) => Promise<{message: string, user: any}>;
+  register: (name: string, email: string, password: string) => Promise<{ message: string }>;
   logout: () => void;
 }
 
@@ -17,6 +17,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true)
   
   useEffect(() => {
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const data = await res.json();
           setUser(data.userByID);
           setIsAuthenticated(true);
+          setIsAdmin(data.userByID.isAdmin)
         } else {
           setUser(null);
           setIsAuthenticated(false);
@@ -95,7 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, register, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
