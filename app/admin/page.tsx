@@ -14,7 +14,7 @@ interface User {
   isAdmin: boolean;
 }
 interface EditUser {
-  id: number;
+  id: number; 
   name: string;
   isAdmin: boolean;
 }
