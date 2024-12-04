@@ -29,7 +29,7 @@ const Chat = () => {
     const [userId, setUserId] = useState('');
     const router = useRouter();
 
-    const socketClient: Socket = io("http://localhost:3001", {
+    const socketClient: Socket = io("https://movie-project-bk-630243095989.us-central1.run.app", {
         withCredentials: true,
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
@@ -49,7 +49,7 @@ const Chat = () => {
             }
 
             try {
-                const res = await fetch(`http://localhost:3001/api/search-users/?search=${searchValue}`, {
+                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/search-users/?search=${searchValue}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                     });
@@ -154,7 +154,7 @@ const Chat = () => {
         const token = localStorage.getItem('token');
         setToken(token || '');
     }, [user]);
-    
+
     useEffect(() => {
       if (!loading && !isAuthenticated) {
         router.push('/login');
