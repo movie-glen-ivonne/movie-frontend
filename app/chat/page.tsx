@@ -28,7 +28,7 @@ const Chat = () => {
     const [userId, setUserId] = useState('');
 
 
-    const socketClient: Socket = io("https://movie-project-bk-630243095989.us-central1.run.app", {
+    const socketClient: Socket = io("http://localhost:3001", {
         withCredentials: true,
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
@@ -48,7 +48,7 @@ const Chat = () => {
             }
 
             try {
-                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/search-users/?search=${searchValue}`, {
+                const res = await fetch(`http://localhost:3001/api/search-users/?search=${searchValue}`, {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${token}` },
                     });

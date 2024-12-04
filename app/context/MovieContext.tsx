@@ -50,6 +50,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
       getTrendingShows();
       getTopRatedShows();
       getTopRatedMovies();
+      console.log('hereee');
       getUserLibraries();
     }
   }, [isAuthenticated]);
@@ -66,7 +67,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
 
     const getTrendingMovies = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/trending/movies`, {
+        const res = await fetch(`http://localhost:3001/api/trending/movies`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -80,7 +81,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
 
     const getTrendingShows = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/trending/shows`, {
+        const res = await fetch(`http://localhost:3001/api/trending/shows`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -94,7 +95,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
 
     const getTopRatedMovies = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/top-rated/movies`, {
+        const res = await fetch(`http://localhost:3001/api/top-rated/movies`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -108,7 +109,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
 
     const getTopRatedShows = async () => {
         const token = localStorage.getItem('token');
-        const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/top-rated/shows`, {
+        const res = await fetch(`http://localhost:3001/api/top-rated/shows`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -126,7 +127,7 @@ export const MovieProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (token) {
             
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/libraries`, {
+            const res = await fetch(`http://localhost:3001/api/libraries`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             });

@@ -43,7 +43,7 @@ export default function Home() {
         
         const token = localStorage.getItem('token');
         if (token) {
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/movies/${id}?type=${media_type}`, {
+            const res = await fetch(`http://localhost:3001/api/movies/${id}?type=${media_type}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -72,7 +72,7 @@ export default function Home() {
         try {
           if (query !== "") {
             
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/search/?query=${query}`, {
+            const res = await fetch(`http://localhost:3001/api/search/?query=${query}`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` },
             });

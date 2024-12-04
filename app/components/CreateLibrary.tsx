@@ -34,7 +34,7 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, close
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const response = await fetch('https://movie-project-bk-630243095989.us-central1.run.app/api/libraries', {
+                const response = await fetch('http://localhost:3001/api/libraries', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

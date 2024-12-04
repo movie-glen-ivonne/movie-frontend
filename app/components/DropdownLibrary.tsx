@@ -25,14 +25,14 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
 
     useEffect(() => {
         getUserLibraries();
-    });
+    }, []);
     
 
     const getUserLibraries = async () => {
         const token = localStorage.getItem('token');
 
         if (token) {
-            const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/libraries`, {
+            const res = await fetch(`http://localhost:3001/api/libraries`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` },
             });
@@ -84,7 +84,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
         if (token) {
             try {
                 console.log(movie);
-                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/managelibrary/add`, {
+                const res = await fetch(`http://localhost:3001/api/managelibrary/add`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -128,7 +128,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
-                const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/managelibrary/remove`, {
+                const res = await fetch(`http://localhost:3001/api/managelibrary/remove`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
