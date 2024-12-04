@@ -5,6 +5,7 @@ import Image from 'next/image';
 const Messages: React.FC<{ id: string, room_name: string, messages: any }> = ({ id, room_name, messages }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const url = `https://ui-avatars.com/api/?name=${room_name.toUpperCase()}&background=random`
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -22,7 +23,7 @@ const Messages: React.FC<{ id: string, room_name: string, messages: any }> = ({ 
           </div>
           <div className="border rounded-full border-black p-1/2">
             <Image
-                    src={`https://ui-avatars.com/api/?name=${room_name.toUpperCase()}&background=random`}
+                    src={url}
                     alt={room_name ? room_name : "test"}
                     width={55}
                     height={55}
@@ -50,7 +51,7 @@ const Messages: React.FC<{ id: string, room_name: string, messages: any }> = ({ 
               <div className="w-8 m-3 rounded-full" />
             ) : (
               <Image
-                    src={`https://ui-avatars.com/api/?name=${message.username.toUpperCase()}&background=random`}
+                    src={url}
                     alt={message.username ? message.username : "test"}
                     width={45}
                     height={45}
