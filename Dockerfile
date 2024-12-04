@@ -16,8 +16,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # 
-RUN npm install next --legacy-peer-deps
-RUN npx next build --no-lint  
+RUN npm run build
 
 # Stage 2: Create a production image
 FROM node:18 AS runner
