@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
         hostname: 'demos.creative-tim.com',
       },
     ],
+    loader: 'default',
     dangerouslyAllowSVG: true,
   },
 };
