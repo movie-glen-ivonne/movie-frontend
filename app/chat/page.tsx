@@ -140,7 +140,11 @@ const Chat = () => {
 
     if (socketClientRef.current) {
       socketClientRef.current.emit("join", { roomId });
+
+      socketClientRef.current.removeAllListeners("message");
+      
       socketClientRef.current.on("message", (message) => {
+        console.log(message);
         setMessages((prevMessages) => [...prevMessages, message]);
       });
     }
@@ -168,18 +172,6 @@ const Chat = () => {
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
         },
-      });
-  
-      socketClientRef.current.on('connect', () => {
-        console.log('Socket connected successfully');
-      });
-  
-      socketClientRef.current.on('connect_error', (err) => {
-        console.error('Socket connection error:', err);
-      });
-  
-      socketClientRef.current.on('disconnect', () => {
-        console.log('Socket disconnected');
       });
     }
   

@@ -11,14 +11,13 @@ const MessageInput: React.FC<{ roomId: string, socketClient: Socket | null }> = 
     const { userLibraries }: any = useMovie();
 
     const handleSendMessage = () => {
-        console.log("socketClient:", socketClient); // Log socketClient to check its state
         if (text && socketClient) {
             socketClient.emit("message", {
                 roomId,
                 senderId: socketClient.id,
                 text,
             });
-            setText(""); // Reset input after sending message
+            setText("");
         } else if (selectedLibraryId && selectedLibraryName && socketClient) {
             const link = `http://localhost:3000/library/${selectedLibraryId}?library_name=${selectedLibraryName}`;
             setText(link);
@@ -27,7 +26,6 @@ const MessageInput: React.FC<{ roomId: string, socketClient: Socket | null }> = 
                 senderId: socketClient.id,
                 text: link,
             });
-            // Reset library selection after sending message
             setSelectedLibraryId(null);
             setSelectedLibraryName(null);
         }
