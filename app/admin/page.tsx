@@ -21,7 +21,7 @@ export default function Admin() {
     const [showToast, setShowToast] = useState(false);
     const [isError, setIsError] = useState(false);
     const [users, setUsers] = useState<User[] | null>(null);
-    const { user, loading, isAuthenticated } = useAuth() ?? { user: null, loading: true, isAuthenticated: false };;
+    const { user, loading, isAuthenticated, isAdmin } : any = useAuth();
     const [filter, setFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState(''); 
 
@@ -32,14 +32,18 @@ export default function Admin() {
     const [editUserData, setEditUserData] = useState<User | null>(null);
   
     useEffect(() => {
+
       if (!loading && !isAuthenticated) {
         router.push('/login');
+      }
+      if (!loading && isAuthenticated && !isAdmin) {
+        router.push('/notfound');
       }
       if (!loading && user) {
 
           getAllUsers();
       }
-    }, [isAuthenticated, loading, router, user]);
+    }, [isAuthenticated, loading, router, user, isAdmin]);
     
     const filteredUsers = users
         ?.filter((user) => {

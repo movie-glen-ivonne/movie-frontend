@@ -83,6 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (data.token) {
       localStorage.setItem('token', data.token);
       setUser(data.user);
+      setIsAdmin(data.user.isAdmin)
       setIsAuthenticated(true);
       setLoading(false);
     }
