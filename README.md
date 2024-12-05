@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Movie Library Frontend
+
+This repository contains the **frontend** of the **Movie Library Project**, built with **Next.js**, providing an intuitive and responsive interface for managing movie libraries, discovering movies and shows, accessing AI recommendations, and engaging in real-time chat.
+
+---
+
+## Features (Summary)
+
+- **User Authentication**: Sign up, login, and secure access to protected routes.
+- **Library Management**: Create, edit, and manage personal movie libraries.
+- **Discover Movies & Shows**: Explore trending, top-rated, or searched content with detailed pages.
+- **AI Recommendations**: Get personalized movie/show suggestions.
+- **Real-Time Chat**: Instant messaging and chat rooms with Socket.IO.
+- **User Profiles**: View and update profile information.
+For backend API details and implementation, refer to the **[backend repository](<https://github.com/movie-glen-ivonne/movie-backend>)**, which handles the core functionalities like database management, authentication, and movie data processing.
+
+## Demo Functionality
+
+**[Video](<https://github.com/movie-glen-ivonne/movie-backend>)**,
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v16 or above)
+- npm or yarn
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/movies-frontend.git
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Setup
 
-## Learn More
+1. Clone the repository:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/movie-glen-ivonne/movie-backend.git
+   cd movie-library-api
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install the Required Dependencies
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Run the following command to install the necessary dependencies:
 
-## Deploy on Vercel
+    ```bash
+    npm install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Running the Application
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To start the application locally, run:
+
+    ```bash
+    npm run dev
+    ```
+
+## Tech Stack
+
+### Frameworks & Libraries
+- **Next.js**: Server-side rendering and static site generation.
+- **React**: Modern UI development with reusable components.
+- **Tailwind CSS**: Utility-first CSS for rapid and responsive UI design.
+- **Socket.IO**: Real-time chat functionality.
+
+### State Management & API Integration
+- **Axios**: HTTP client for communicating with the backend API.
+- **React Context**: Simplified global state management.
+
+### Utilities
+- **Swiper**: Carousel component for displaying movie collections.
+- **React Icons**: Scalable and customizable icons.
+- **Moment.js**: For date formatting and handling.
+
+### Development Tools
+- **TypeScript**: Strongly-typed JavaScript for safer code.
+- **PostCSS**: Enhanced CSS processing.
+- **GitHub Actions**: Automated CI/CD workflows.
+---
+
+## Deployment Links
+
+The web application currently is deployed in https://movie-project-fe-630243095989.us-central1.run.app
+
