@@ -123,10 +123,10 @@ export default function Home() {
           <main className="flex flex-col row-start-2 items-center my-10 sm:items-start">
             <div className="max-w-2xl">
               <div className="text-center">
-                <h1 className="text-balance text-5xl font-semibold tracking-tight text-white sm:text-4xl">
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                   Search for Movies & TV Shows
                 </h1>
-                <div className="relative mt-8 flex h-10 w-full min-w-[200px] max-w-[24rem]">
+                <div className="relative mt-8 flex h-10 w-full min-w-[200px] max-w-[20rem]">
                   <button
                     className="!absolute right-1 top-1 z-10 select-none rounded bg-netflixRed py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none peer-placeholder-shown:pointer-events-none peer-placeholder-shown:bg-blue-gray-500 peer-placeholder-shown:opacity-50 peer-placeholder-shown:shadow-none"
                     type="button"

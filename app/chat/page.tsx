@@ -183,8 +183,8 @@ const Chat = () => {
 
   return (
     <div className="">
-      <div className="flex">
-        <div className="w-80 px-4 hidden md:block border-r-[1px] border-selfMessage">
+      <div className="flex flex-col md:flex-row w-full h-full">
+      <div className="w-full md:w-80 px-4 border-b-[1px] md:border-b-0 md:border-r-[1px] border-selfMessage">
           <div className="overflow-y-auto">
             <div className="text-xl text-gray-600 dark:text-gray-200 p-3">Chat</div>
             <div className="search-chat flex p-3">

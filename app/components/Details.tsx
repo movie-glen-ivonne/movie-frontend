@@ -142,8 +142,8 @@ const Details: React.FC<DetailsProps> = ({ data, library_id, library_name, isMod
           aria-hidden="true"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
         >
-          <div className="relative p-[300px] ">
-            {/* Modal Content */}
+          <div className="relative w-full max-w-lg p-4 sm:p-6">
+              {/* Modal Content */}
             <div className="relative bg-white rounded-lg shadow dark:bg-black">
               {/* Close Button */}
               <button
