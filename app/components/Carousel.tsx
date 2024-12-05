@@ -43,8 +43,9 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
         modules={[Keyboard, Scrollbar, Navigation, Pagination]}
         className="mySwiper"
       >
-        {data.map((item, index) => (
-
+      {data.map((item, index) => {
+      if (item && item.poster_path) {
+        return (
           <SwiperSlide key={index}>
             <Image
               loader={myLoader}
@@ -56,7 +57,10 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
               height={400}
             />
           </SwiperSlide>
-        ))}
+        );
+      }
+        return null; // Return null for items without a poster_path
+      })}
       </Swiper>
     </>
   );
