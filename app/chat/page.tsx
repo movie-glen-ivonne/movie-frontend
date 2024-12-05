@@ -44,7 +44,7 @@ const Chat = () => {
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
         },
-        transports: ['websocket']
+        // transports: ['websocket']
     });
 
     

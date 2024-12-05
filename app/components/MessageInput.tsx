@@ -22,7 +22,7 @@ const MessageInput: React.FC<{ roomId: string }> = ({ roomId }) => {
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
         },
-        transports: ['websocket']
+        // transports: [ 'polling']
     });
     const handleSendMessage = () => {
         if (text) {
