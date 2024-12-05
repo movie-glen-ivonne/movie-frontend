@@ -4,10 +4,10 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
   user: any;
-  isAuthenticated:  boolean;
+  isAuthenticated: boolean;
   loading: boolean;
   isAdmin: boolean;
-  login: (email: string, password: string) => Promise<{message: string, user: any}>;
+  login: (email: string, password: string) => Promise<{ message: string, user: any }>;
   register: (name: string, email: string, password: string) => Promise<{ message: string }>;
   logout: () => void;
 }
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true)
-  
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
         setIsAuthenticated(false);
       } finally {
-        setLoading(false); // Ensure loading is set to false after the async call finishes
+        setLoading(false);
       }
     } else {
       setUser(null);

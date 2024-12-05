@@ -2,10 +2,21 @@
 
 import React, { useState } from 'react';
 import ConversationItem from './ConversationItem';
+import moment from 'moment';
+
+interface Message {
+    id: number;
+    createdAt: string;
+    roomId: string;
+    sendId: string;
+    text: string;
+    username: string;
+}
 
 interface Room {
     id: string;
     name: string;
+    latestMessage: Message;
     participants: string[];
 }
 
@@ -27,9 +38,15 @@ const Conversation: React.FC<ConversationProps> = ({ rooms, handleJoinRoom }) =>
         <div className="p-1  overflow-y-auto h-[500px]">
             {rooms.map((item) => (
                 <ConversationItem
-                    key={item.id}
-                    message="test"
-                    time="1 hour ago"
+                key={item.id}
+                    message={item.latestMessage ? item.latestMessage.text : ""}
+                    time={
+                        item.latestMessage
+                          ? moment(item.latestMessage.createdAt).isSame(new Date(), 'day')
+                            ? moment(item.latestMessage.createdAt).format('h:mm A')
+                            : moment(item.latestMessage.createdAt).format('MMM D')
+                          : ""
+                    }
                     name={item.name}
                     active={item.id === activeRoomId}
                     id={item.id}

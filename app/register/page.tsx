@@ -1,8 +1,8 @@
 'use client'
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 
@@ -13,21 +13,21 @@ const Register = () => {
     const router = useRouter()
 
     const { register } = useAuth() ?? { register: () => Promise.resolve({ message: '' }) };
-    
-    const handleSubmit = async (e : React.FormEvent) => {
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        try{
+        try {
             const response = await register(name, email, password)
-    
-            if(response.message === 'User registered successfully.'){
+
+            if (response.message === 'User registered successfully.') {
                 // alert(response.message)
                 router.push('/')
             }
-            else if(response.message === 'User already exists'){
+            else if (response.message === 'User already exists') {
                 alert(response.message)
             }
         }
-        catch(err){
+        catch (err) {
             console.log(err)
         }
     }
@@ -41,7 +41,7 @@ const Register = () => {
                         alt="Netflix"
                         src="/image.png"
                         className="mx-auto h-10 w-auto"
-                        width={500} 
+                        width={500}
                         height={300}
                     />
                     <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white-900">

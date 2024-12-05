@@ -9,11 +9,11 @@ export interface Movie {
     video_url: string;
     media_type: string;
 }
-  
+
 export interface Library {
     id: number;
     name: string;
-    movies: { movie: Movie }[]; 
+    movies: { movie: Movie }[];
 }
 
 export interface MediaItem {

@@ -10,14 +10,13 @@ import Image from 'next/image';
 
 interface CarouselProps {
   data: { poster_path: string; id: number, media_type: string }[];
-  fetchMovieDetail: (id: number, media_type: string) => void;
 }
 
 
 // import required modules
 import { Keyboard, Scrollbar, Navigation, Pagination } from 'swiper/modules';
 
-const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
+const Carousel: React.FC<CarouselProps> = ({ data }) => {
 
 
   const myLoader = ({ src }: any) => {
@@ -50,7 +49,6 @@ const Carousel: React.FC<CarouselProps> = ({ data, fetchMovieDetail }) => {
               loader={myLoader}
               src={item.poster_path} // Pass the relative path only
               alt={`Slide ${index + 1}`}
-              onClick={() => fetchMovieDetail(item.id, item.media_type)}
               className="cursor-pointer"
               width={400}
               height={400}

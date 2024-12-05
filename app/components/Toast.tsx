@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 
 // Define a type for the props
 interface ToastProps {
-    message: string;
-    onClose: () => void;
-    type: 'success' | 'error'; // Add 'error' as a possible type
+  message: string;
+  onClose: () => void;
+  type: 'success' | 'error'; // Add 'error' as a possible type
 }
 
 const Toast: React.FC<ToastProps> = ({ message, onClose, type }) => {

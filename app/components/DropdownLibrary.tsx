@@ -26,17 +26,17 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
     useEffect(() => {
         getUserLibraries();
     }, []);
-    
+
 
     const getUserLibraries = async () => {
         const token = localStorage.getItem('token');
 
         if (token) {
             const res = await fetch(`https://movie-project-bk-630243095989.us-central1.run.app/api/libraries`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` },
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` },
             });
-        
+
             if (res.ok) {
                 if (res.status === 204) {
                     console.log('No content available.');
@@ -44,7 +44,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                 }
                 const data = await res.json();
                 setUserLibraries(data)
-                initializeSelectedLibraries(data); 
+                initializeSelectedLibraries(data);
             }
         }
     }
@@ -105,7 +105,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                         }
                     }),
                 });
-    
+
                 if (res.ok) {
                     setIsError(false);
                     setMessage('Movie added to the library!');
@@ -139,7 +139,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                         idMovie: movie.id,
                     }),
                 });
-    
+
                 if (res.ok) {
                     setIsError(false);
                     setMessage('Movie removed from the library!');
@@ -166,7 +166,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
         <div className="relative">
 
             {userLibraries.length !== 0 && (
-                
+
                 <button
                     id="dropdownSearchButton"
                     onClick={() => setIsOpen(!isOpen)}
@@ -175,7 +175,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                 >
                     Add to library
                     <svg className="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
             )}
@@ -187,7 +187,7 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                         <div className="relative">
                             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                 </svg>
                             </div>
                             <input
@@ -222,9 +222,9 @@ const DropdownSearch: React.FC<{ movie: Movie }> = ({ movie }) => {
                 </div>
             )}
             {showToast && (
-                <Toast 
-                    message={message} 
-                    onClose={() => setShowToast(false)} 
+                <Toast
+                    message={message}
+                    onClose={() => setShowToast(false)}
                     type={isError ? 'error' : 'success'}
                 />
             )}

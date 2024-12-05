@@ -10,12 +10,12 @@ import Image from 'next/image'
 const navigation = [
   { name: 'Search', href: '/' },
   { name: 'My Library', href: '/library' },
-  { name: 'Chat', href: '/chat'}
+  { name: 'Chat', href: '/chat' }
 ]
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { isAuthenticated, loading, logout, isAdmin } : any = useAuth();
+  const { isAuthenticated, loading, logout, isAdmin }: any = useAuth();
 
   return (
     <header>
@@ -27,7 +27,7 @@ export default function NavBar() {
               alt="netflix logo"
               src="/image.png"
               className="h-8 w-auto"
-              width={500} 
+              width={500}
               height={300}
             />
           </Link>
@@ -62,18 +62,18 @@ export default function NavBar() {
             </a>
           </div>
 
-        )} 
+        )}
 
         {isAuthenticated && (
-            <div className="flex flex-1 items-center justify-end gap-x-6">
-              <button
-                onClick={logout}
-                style={{ backgroundColor: '#e50914' }}
-                className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Logout
-              </button>
-            </div>
+          <div className="flex flex-1 items-center justify-end gap-x-6">
+            <button
+              onClick={logout}
+              style={{ backgroundColor: '#e50914' }}
+              className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Logout
+            </button>
+          </div>
         )}
         <div className="flex lg:hidden">
           <button
@@ -96,7 +96,7 @@ export default function NavBar() {
                 alt=""
                 src="/image.png"
                 className="h-8 w-auto"
-                width={500} 
+                width={500}
                 height={300}
               />
             </a>
@@ -110,15 +110,15 @@ export default function NavBar() {
               </a>
             )}
             {isAuthenticated && (
-                <div className="flex flex-1 items-center justify-end gap-x-6">
-                  <button
-                    style={{ backgroundColor: '#e50914' }}
-                    onClick={logout}
-                    className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    Logout
-                  </button>
-                </div>
+              <div className="flex flex-1 items-center justify-end gap-x-6">
+                <button
+                  style={{ backgroundColor: '#e50914' }}
+                  onClick={logout}
+                  className="rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Logout
+                </button>
+              </div>
             )}
             <button
               type="button"
@@ -142,9 +142,9 @@ export default function NavBar() {
                   </a>
                 ))}
                 {isAdmin && (
-                    <a href="/admin" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white-900 hover:bg-gray-50 hover:text-black">
-                        Manage Users
-                    </a>
+                  <a href="/admin" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-white-900 hover:bg-gray-50 hover:text-black">
+                    Manage Users
+                  </a>
                 )}
               </div>
               {!isAuthenticated && !loading && (

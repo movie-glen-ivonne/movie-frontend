@@ -46,7 +46,7 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, close
                 if (response.ok) {
                     const result = await response.json();
                     console.log('Library created:', result);
-       
+
                     setErrorMessage('')
                     setLibraryName('')
                     closeCreateLibraryModal();
@@ -78,7 +78,7 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, close
                                     className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                                 >
                                     <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                     </svg>
                                     <span className="sr-only">Close modal</span>
                                 </button>
@@ -94,17 +94,17 @@ const CreateLibrary: React.FC<DetailsProps> = ({ isCreateLibraryModalOpen, close
                                             className="bg-white border border-gray-300 text-black-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-white-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-black"
                                             placeholder="Horror"
                                             value={libraryName}
-                                            onChange={handleInputChange} // Capture the input value
+                                            onChange={handleInputChange}
                                             required
                                         />
                                         {errorMessage !== "" && (
 
                                             <p className="text-xs text-red-500 flex items-center mt-2">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14px" height="14px" fill="currentColor" className="mr-2"
-                                                viewBox="0 0 512 512">
-                                                <path
-                                                    d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
-                                                    data-original="#000000" />
+                                                    viewBox="0 0 512 512">
+                                                    <path
+                                                        d="M256 0C114.833 0 0 114.833 0 256s114.833 256 256 256 256-114.853 256-256S397.167 0 256 0zm0 472.341c-119.275 0-216.341-97.046-216.341-216.341S136.725 39.659 256 39.659c119.295 0 216.341 97.046 216.341 216.341S375.275 472.341 256 472.341z"
+                                                        data-original="#000000" />
                                                 </svg>
                                                 {errorMessage}
                                             </p>

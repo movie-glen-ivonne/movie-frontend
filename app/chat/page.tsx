@@ -11,10 +11,20 @@ import MessageInput from  "../components/MessageInput";
 
 import { io, Socket } from "socket.io-client";
 
+interface Message {
+  id: number;
+  createdAt: string;
+  roomId: string;
+  sendId: string;
+  text: string;
+  username: string;
+}
+
 interface Room {
-    id: string;
-    name: string;
-    participants: string[];
+  id: string;
+  name: string;
+  latestMessage: Message;
+  participants: string[];
 }
 
 const Chat = () => {
@@ -34,6 +44,7 @@ const Chat = () => {
         extraHeaders: {
           "Authorization": `Bearer ${token}`,
         },
+        transports: ['websocket']
     });
 
     
@@ -102,7 +113,7 @@ const Chat = () => {
     const fetchMessages = async (roomId: string) => {
         try {
           const response = await apiClient.get(`/messages/${roomId}`);
-          console.log(response);
+          console.log(response);  
           setMessages(response.data);
         } catch (error) {
           console.error("Failed to fetch messages:", error);
