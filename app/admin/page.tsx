@@ -312,10 +312,10 @@ export default function Admin() {
                             <button
                                 onClick={() => handleDeleteClick(data.id)}
                                 type="button"
-                                disabled={loading || user.id === data.id}
+                                disabled={loading || user?.id === data.id}
                                 // style={{ backgroundColor: '#e50914' }}
                                 className={`text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-1 text-center ${
-                                    loading || user.id === data.id
+                                    loading || user?.id === data.id
                                       ? 'bg-gray-400 cursor-not-allowed'
                                       : 'hover:bg-red-700 focus:ring-blue-300 dark:bg-netflixRed dark:hover:bg-red dark:focus:ring-blue-800'
                                   }`}
