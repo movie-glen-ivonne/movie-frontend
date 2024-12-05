@@ -142,9 +142,8 @@ const Chat = () => {
       socketClientRef.current.emit("join", { roomId });
 
       socketClientRef.current.removeAllListeners("message");
-      
+
       socketClientRef.current.on("message", (message) => {
-        console.log(message);
         setMessages((prevMessages) => [...prevMessages, message]);
       });
     }

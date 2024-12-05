@@ -18,16 +18,6 @@ const MessageInput: React.FC<{ roomId: string, socketClient: Socket | null }> = 
                 text,
             });
             setText("");
-        } else if (selectedLibraryId && selectedLibraryName && socketClient) {
-            const link = `http://localhost:3000/library/${selectedLibraryId}?library_name=${selectedLibraryName}`;
-            setText(link);
-            socketClient.emit("message", {
-                roomId,
-                senderId: socketClient.id,
-                text: link,
-            });
-            setSelectedLibraryId(null);
-            setSelectedLibraryName(null);
         }
     };
 
@@ -43,6 +33,8 @@ const MessageInput: React.FC<{ roomId: string, socketClient: Socket | null }> = 
         const name = e.target.options[e.target.selectedIndex].text;
         setSelectedLibraryName(name);
         setSelectedLibraryId(id);
+        const link = `https://movie-project-fe-630243095989.us-central1.run.app/library/${id}?library_name=${name}`;
+        setText(link);
     };
 
     return (

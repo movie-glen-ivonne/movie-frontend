@@ -41,10 +41,8 @@ const SharedLibrary = () => {
                         console.log('No content available.');
                         return;
                     }   
-                    console.log(res);
-
+ 
                     const data: Library = await res.json();
-                    console.log(data);
 
                     const movieData = data.movies.map(({ movie }: { movie: Movie }) => ({
                         poster_path: movie.poster_path,

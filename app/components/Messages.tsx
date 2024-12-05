@@ -14,8 +14,10 @@ const isValidUrl = (text: string) => {
 const Messages: React.FC<{ id: string, room_name: string, messages: any }> = ({ id, room_name, messages }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const renderMessageText = (text: string) => {
+    // console.log(text);
     if (isValidUrl(text)) {
       const url = new URL(text);
+      console.log(url);
       const pathParts = url.search.split('=');
       const libraryName = pathParts[pathParts.length - 1];
       return (
