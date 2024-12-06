@@ -16,7 +16,7 @@ For backend API details and implementation, refer to the **[backend repository](
 
 ## Demo Functionality
 
-**[Video](<https://github.com/movie-glen-ivonne/movie-backend>)**,
+Click the image below to watch a video demonstration of the application: **[Demo Video](<https://www.youtube.com/watch?v=47jhBay-dME>)**
 
 ---
 
@@ -27,35 +27,29 @@ For backend API details and implementation, refer to the **[backend repository](
 - Node.js (v16 or above)
 - npm or yarn
 
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/movies-frontend.git
-
 ### Setup
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/movie-glen-ivonne/movie-backend.git
+   git clone https://github.com/movie-glen-ivonne/movie-frontend.git
    cd movie-library-api
 
 2. Install the Required Dependencies
 
-Run the following command to install the necessary dependencies:
+    Run the following command to install the necessary dependencies:
 
     ```bash
     npm install
-    ```
+    
 
 3. Running the Application
 
-To start the application locally, run:
+    To start the application locally, run:
 
     ```bash
     npm run dev
-    ```
+    
 
 ## Tech Stack
 
